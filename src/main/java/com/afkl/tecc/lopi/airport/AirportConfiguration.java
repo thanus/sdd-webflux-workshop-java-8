@@ -48,7 +48,7 @@ public class AirportConfiguration {
     @Bean
     public CsvFileParser<Airport> airportCsvFileParser() {
         // @formatter:off
-        return new CsvFileParser<>() {};
+        return new CsvFileParser<Airport>() {};
         // @formatter:on
     }
 

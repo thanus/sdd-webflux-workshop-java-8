@@ -77,7 +77,7 @@ public class Airline implements Comparable<Airline> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        var airline = (Airline) o;
+        Airline airline = (Airline) o;
         return isActive() == airline.isActive() &&
                 Objects.equals(getId(), airline.getId()) &&
                 Objects.equals(getName(), airline.getName()) &&

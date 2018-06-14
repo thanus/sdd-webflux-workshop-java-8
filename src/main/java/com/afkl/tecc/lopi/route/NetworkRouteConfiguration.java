@@ -46,7 +46,7 @@ public class NetworkRouteConfiguration {
     @Bean
     public CsvFileParser<NetworkRoute> routeCsvFileParser() {
         // @formatter:off
-        return new CsvFileParser<>() {};
+        return new CsvFileParser<NetworkRoute>() {};
         // @formatter:on
     }
 

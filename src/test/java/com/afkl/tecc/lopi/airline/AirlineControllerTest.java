@@ -16,6 +16,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.runners.MethodSorters.NAME_ASCENDING;
@@ -35,8 +36,8 @@ public class AirlineControllerTest {
 
     @Test
     public void shouldListTenAirlineByDefault() {
-        var data = IntStream.range(1, 20).mapToObj((i) -> new Airline(i, null, null, null, null, null, null, false));
-        BDDMockito.given(repository.stream()).willReturn(Flux.fromStream(data));
+      Stream<Airline> data = IntStream.range(1, 20).mapToObj((i) -> new Airline(i, null, null, null, null, null, null, false));
+      BDDMockito.given(repository.stream()).willReturn(Flux.fromStream(data));
         webTestClient.get().uri("/airlines").exchange()
                 .expectStatus().isOk()
                 .expectBody(PagedResponse.class)
@@ -48,7 +49,7 @@ public class AirlineControllerTest {
 
     @Test
     public void shouldSkipUntilCursor() {
-        var data = IntStream.range(1, 20).mapToObj((i) -> new Airline(i, null, null, null, null, null, null, false));
+        Stream<Airline> data = IntStream.range(1, 20).mapToObj((i) -> new Airline(i, null, null, null, null, null, null, false));
         BDDMockito.given(repository.stream()).willReturn(Flux.fromStream(data));
         webTestClient.get().uri("/airlines?size=2&cursor=4").exchange()
                 .expectStatus().isOk()

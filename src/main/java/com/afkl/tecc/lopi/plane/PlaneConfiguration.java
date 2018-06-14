@@ -34,7 +34,7 @@ public class PlaneConfiguration {
     @Bean
     public CsvFileParser<Plane> planeCsvFileParser() {
         // @formatter:off
-        return new CsvFileParser<>() {};
+        return new CsvFileParser<Plane>() {};
         // @formatter:on
     }
 

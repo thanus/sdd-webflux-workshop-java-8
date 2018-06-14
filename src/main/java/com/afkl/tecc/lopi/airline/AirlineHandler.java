@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 @OpenFlightHandler
 public class AirlineHandler {
@@ -23,19 +25,19 @@ public class AirlineHandler {
     }
 
     protected Mono<ServerResponse> list(ServerRequest req) {
-        var size = req.queryParam("size").map(Integer::parseInt)
+        Integer size = req.queryParam("size").map(Integer::parseInt)
                 .filter((s) -> s > 0)
                 .orElse(10);
-        var cursor = req.queryParam("cursor").map(Integer::parseInt);
-        var stream = repository.stream().sort();
+        Optional<Integer> cursor = req.queryParam("cursor").map(Integer::parseInt);
+        Flux<Airline> stream = repository.stream().sort();
         if (cursor.isPresent()) {
             stream = stream.skipUntil((airline) -> airline.getId() > cursor.get());
         }
         return stream.take(size)
                 .collectList()
                 .flatMap((airlines) -> {
-                    var newCursor = airlines.stream().reduce((f, s) -> s).map(Airline::getId).orElse(0);
-                    var response = new PagedResponse<>(airlines, size, newCursor);
+                    Integer newCursor = airlines.stream().reduce((f, s) -> s).map(Airline::getId).orElse(0);
+                    PagedResponse<Airline> response = new PagedResponse<>(airlines, size, newCursor);
                     return airlines.size() == 0 ? Mono.empty() : Mono.just(response);
                 }).flatMap((response) -> ServerResponse.ok() // @formatter:off
                         .body(Mono.just(response), new ParameterizedTypeReference<PagedResponse<Airline>>() {})) // @formatter:on
